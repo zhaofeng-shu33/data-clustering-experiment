@@ -24,6 +24,7 @@ import info_cluster
 from uci_glass import fetch_uci_glass
 from uci_libras import fetch_uci_libras
 import schema
+from schema import _generate_three_circle_data
 # module level global variables go here
 
 logging.basicConfig(filename=os.path.join(schema.BUILD_DIR, schema.EMPIRICAL_LOGGING_FILE), level=logging.INFO, format='%(asctime)s %(message)s')
@@ -86,27 +87,35 @@ def compute_adjusted_rand_score(feature, ground_truth, parameter_dic):
 def Gaussian(parameter_dic):
     data = schema.get_npx('Gaussian.npx')
     if(data is None):
-        print("You need to generate Gaussian.npx by running 'python fine_tuning.py' first")
-        exit(0)
-    pos_list = data[:,:2]
-    ground_truth = data[:,-1]
+        # set random_state to make the result reproducible
+        pos_list, ground_truth = datasets.make_blobs(n_samples = 100, centers=[[3,3],[-3,-3],[3,-3],[-3,3]], cluster_std=1, random_state=0)
+        ground_truth_s = ground_truth.reshape(len(ground_truth),1)
+        schema.set_npx('Gaussian.npx', (pos_list, ground_truth_s))
+    else:
+        pos_list = data[:,:2]
+        ground_truth = data[:,-1]
     return compute_adjusted_rand_score(pos_list, ground_truth, parameter_dic)
     
     
 def Circle(parameter_dic):
     data = schema.get_npx('Circle.npx')
     if(data is None):
-        print("You need to generate Circle.npx by running 'python fine_tuning.py' first")
-        exit(0)    
-    pos_list = data[:,:2]
-    ground_truth = data[:,-1]
+        pos_list, ground_truth = _generate_three_circle_data()
+        ground_truth_s = ground_truth.reshape(len(ground_truth),1)
+        schema.set_npx('Circle.npx', (pos_list, ground_truth_s))
+    else:
+        pos_list = data[:,:2]
+        ground_truth = data[:,-1]  
     return compute_adjusted_rand_score(pos_list, ground_truth, parameter_dic)
         
 def Iris(parameter_dic):
     feature, ground_truth = datasets.load_iris(return_X_y = True)
     return compute_adjusted_rand_score(feature, ground_truth, parameter_dic)    
 
-
+def Glass(parameter_dic):
+    feature, ground_truth = fetch_uci_glass()
+    feature = scale(feature)
+    return compute_adjusted_rand_score(feature, ground_truth, parameter_dic)
     
 def compute(use_cloud, dataset_list):
     json_str = schema.get_file(schema.PARAMETER_FILE, use_cloud)
