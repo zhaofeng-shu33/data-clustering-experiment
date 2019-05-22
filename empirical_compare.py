@@ -123,11 +123,11 @@ def make_table(dic, tb_name, method_dic):
     for i in table:
         for _, v in dic.items():
             i.append('%.2f'%v.get(i[0]))
-    _headers = ['adjusted rand index']
+    _headers = ['Adjusted rand index']
     _headers.extend(list(dic.keys()))
     for i in table:
         i[0] = i[0].replace('_', ' ')
-    latex_table_string = tabulate(table, headers = _headers, tablefmt = 'latex_raw')
+    latex_table_string = tabulate(table, headers = _headers, tablefmt = 'latex_raw', floatfmt='.2f')
     schema.set_file(tb_name, latex_table_string)
     
 if __name__ == '__main__':
