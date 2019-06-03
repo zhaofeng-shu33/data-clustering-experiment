@@ -84,6 +84,7 @@ def check_cat(min_num, partition):
         return -2
     else:    
         return i
+        
 def plot_cluster(pos_list, cat, cat_num, axis):
     global color_list, marker_list
     p = np.asarray(pos_list)

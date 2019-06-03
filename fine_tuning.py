@@ -28,10 +28,6 @@ from uci_libras import fetch_uci_libras
 # module level global variables go here
 logging.basicConfig(filename=os.path.join(schema.BUILD_DIR, schema.FINE_TUNING_LOGGING_FILE), level=logging.INFO, format='%(asctime)s %(message)s')
 
-
-    
-
-
 def _k_means(feature, ground_truth, config):
     ref_sc = -1
     optimal_n_c = 0
@@ -46,6 +42,7 @@ def _k_means(feature, ground_truth, config):
     ars_kmeans = metrics.adjusted_rand_score(ground_truth, y_pred_kmeans)    
     logging.info('ari %.3f'% ars_kmeans)                
     return {'nc': optimal_n_c, 'ari': ref_sc}
+    
 def _agglomerative(feature, ground_truth, config):
     ref_sc = -1
     optimal_n_c = 0
@@ -173,8 +170,6 @@ def fine_tuning(feature, ground_truth, method, config):
     end_time = time.time()
     logging.info('Finish tuning for %s, total time used = %.2f' % (method, end_time - start_time))
     return parameter
-
-
     
 def Gaussian(method, config):
     GfileName = 'Gaussian.npx'
@@ -187,9 +182,8 @@ def Gaussian(method, config):
     else:
         pos_list = data[:,:2]
         ground_truth = data[:,-1]           
-    return fine_tuning(pos_list, ground_truth, method, config)
-    
-    
+    return fine_tuning(pos_list, ground_truth, method, config)    
+
 def Circle(method, config):
     CfileName = 'Circle.npx'
     data = schema.get_npx(CfileName)
