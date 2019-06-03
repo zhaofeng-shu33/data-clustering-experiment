@@ -22,44 +22,25 @@ MAX_CAT = len(color_list)
 USE_PDT = False
 SHOW_PIC = False
 CAL_TIME = False
-class ThreeCircle:
-    def __init__(self, np_list, gamma_1=1, gamma_2=1):
+
+class ThreeCircle:    
+    def __init__(self):
         '''
         np is the number of points at each circle
         '''
         #  (0, 0.1) to (0, 0.2)
         pos_list = []
-        self._np = 10;
-        for i in range(10):
-            pos_list.append([0, random.random()*0.1+0.1])
-        
+        num_list = [60,100,140]
         for i in range(1,4): # radius: 0.1*i
-            self._np += np_list[i-1]
-            for j in range(np_list[i-1]):
-                r = 0.1*i
-                angle = 2*math.pi * random.random()
-                pos_list.append([r * math.cos(angle), r * math.sin(angle)])
-                
-        self._gamma_1 = gamma_1;
-        self._gamma_2 = gamma_2;
-        self.affinity_matrix = np.zeros([self._np, self._np])
-        self.pos_list = pos_list
-        for s_i in range(len(pos_list)):
-            for s_j in range(s_i+1,len(pos_list)):
-                x_1,y_1 = pos_list[s_i]
-                x_2,y_2 = pos_list[s_j]
-                r_1, phi_1 = cmath.polar(complex(x_1, y_1))
-                r_2, phi_2 = cmath.polar(complex(x_2, y_2))                
-                self.affinity_matrix[s_i, s_j] = self.compute_similarity(r_1, phi_1, r_2, phi_2)
-                self.affinity_matrix[s_j, s_i] = self.affinity_matrix[s_i, s_j]
-                
-    def compute_similarity(self, r_1, phi_1, r_2, phi_2):
-        phi_distance = min(abs(phi_1 - phi_2), 2*math.pi-abs(phi_1 - phi_2))
-        return math.exp(-1.0 * self._gamma_1 * math.pow(r_1 - r_2, 2) - self._gamma_2 * math.pow(phi_distance, 2))
+            for j in range(num_list[i-1]):
+                r = 0.1*i + 0.01 * (2*random.random()-1)
+                angle = 2*np.pi * random.random()
+                pos_list.append([r * np.cos(angle), r * np.sin(angle)])
+        self.pos_list = np.asarray(pos_list)
         
     def run(self):
-        g = InfoCluster(affinity = 'precomputed')
-        g.fit(self.affinity_matrix, use_pdt = USE_PDT)
+        g = InfoCluster(affinity = 'nearest_neighbors', n_neighbors=8)
+        g.fit(self.pos_list, use_pdt = USE_PDT)
         self.partition_num_list = g.partition_num_list
         self.critical_values = g.critical_values    
         self.get_category = g.get_category         
@@ -81,6 +62,7 @@ class FourPart:
                 pos_list.append([x, y])
         self.pos_list = np.asarray(pos_list)
         
+        
     def run(self):
         g = InfoCluster(gamma = self._gamma)
         g.fit(self.pos_list, use_pdt = USE_PDT)
@@ -88,6 +70,7 @@ class FourPart:
         self.critical_values = g.critical_values
         self.get_category = g.get_category        
         self.g = g
+        
 def check_cat(min_num, partition):
     '''
     return the index of partition whose first element is no smaller than min_num,
@@ -175,9 +158,7 @@ def plot_ThreeCircle():
     while(i < 0): # check category requirement, regenerate the points if necessary
         if(rerun):
             print('rerun the clustering routine...')
-        gamma_2 = 1
-        ratio = 2000
-        g = ThreeCircle([60, 100, 140], ratio * gamma_2, gamma_2)
+        g = ThreeCircle()
         print('run three circle...')
         g.run()    
         # divide into >=2 parts        
@@ -189,7 +170,7 @@ def plot_ThreeCircle():
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()      
     parser.add_argument('--use_pdt', type=bool, help='use parameteric Dilworth Truncation implementation of info-cluster to draw',
-        default=False, nargs='?', const=True)
+        default=True)
     parser.add_argument('--show_pic', type=bool, help='whether to show the picture while program is running',
         default=False, nargs='?', const=True)
     parser.add_argument('--ignore_four_part', type=bool, help='ignore plotting four part case', default=False, nargs='?', const=True)
