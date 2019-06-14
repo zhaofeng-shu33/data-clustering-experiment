@@ -19,6 +19,7 @@ from info_cluster import InfoCluster
 color_list = ['#3FF711', 'r', 'g', 'm','y','k','c','#00FF00']
 marker_list = ['o', 'v', 's', '*', '+', 'x', 'D', '1']
 MAX_CAT = len(color_list)
+USE_PSP_I = False
 USE_PDT = False
 SHOW_PIC = False
 CAL_TIME = False
@@ -39,8 +40,8 @@ class ThreeCircle:
         self.pos_list = np.asarray(pos_list)
         
     def run(self):
-        g = InfoCluster(affinity = 'nearest_neighbors', n_neighbors=8)
-        g.fit(self.pos_list, use_pdt = USE_PDT)
+        g = InfoCluster(affinity='nearest_neighbors', n_neighbors=8)
+        g.fit(self.pos_list, use_pdt=USE_PDT, use_psp_i=USE_PSP_I)
         self.partition_num_list = g.partition_num_list
         self.critical_values = g.critical_values    
         self.get_category = g.get_category         
@@ -65,7 +66,7 @@ class FourPart:
         
     def run(self):
         g = InfoCluster(gamma = self._gamma)
-        g.fit(self.pos_list, use_pdt = USE_PDT)
+        g.fit(self.pos_list, use_pdt = USE_PDT, use_psp_i=USE_PSP_I)
         self.partition_num_list = g.partition_num_list
         self.critical_values = g.critical_values
         self.get_category = g.get_category        
@@ -172,13 +173,19 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()      
     parser.add_argument('--use_pdt', type=bool, help='use parameteric Dilworth Truncation implementation of info-cluster to draw',
         default=True)
+    parser.add_argument('--use_psp_i', type=bool, help='use improved principal sequence of partition',
+        default=False)        
     parser.add_argument('--show_pic', type=bool, help='whether to show the picture while program is running',
         default=False, nargs='?', const=True)
     parser.add_argument('--ignore_four_part', type=bool, help='ignore plotting four part case', default=False, nargs='?', const=True)
     parser.add_argument('--debug', type=bool, help='enter debug mode', default=False, nargs='?', const=True)
     parser.add_argument('--report_time', type=bool, help='report the time used to plot the graph', default=False, nargs='?', const=True)
     args = parser.parse_args()
-    USE_PDT = args.use_pdt
+    if(args.use_psp_i):
+        USE_PDT = False
+        USE_PSP_I = True
+    else:
+        USE_PDT = args.use_pdt
     SHOW_PIC = args.show_pic
     CAL_TIME = args.report_time
     if(args.debug):
