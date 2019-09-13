@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.com/zhaofeng-shu33/data-clustering-experiment.svg?branch=master)](https://travis-ci.com/zhaofeng-shu33/data-clustering-experiment)
+
 # Prerequisite
 To run the Python code in the directory, you need to install packages listed in `requirements.txt`, the package `oss2` is optional but currently the package control is under progress, so you need to install optional package as well.
 
