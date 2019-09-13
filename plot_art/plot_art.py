@@ -1,6 +1,6 @@
-# \author: zhaofeng-shu33
 '''
     plot artificial dataset
+    Author: zhaofeng-shu33
 '''
 import os
 import random
@@ -19,8 +19,6 @@ from info_cluster import InfoCluster
 color_list = ['#3FF711', 'r', 'g', 'm','y','k','c','#00FF00']
 marker_list = ['o', 'v', 's', '*', '+', 'x', 'D', '1']
 MAX_CAT = len(color_list)
-USE_PSP_I = False
-USE_PDT = False
 SHOW_PIC = False
 CAL_TIME = False
 
@@ -41,8 +39,8 @@ class ThreeCircle:
         
     def run(self):
         g = InfoCluster(affinity='nearest_neighbors', n_neighbors=8)
-        g.fit(self.pos_list, use_pdt=USE_PDT, use_psp_i=USE_PSP_I)
-        self.partition_num_list = g.partition_num_list
+        g.fit(self.pos_list)
+        self.partition_list = g.partition_list
         self.critical_values = g.critical_values    
         self.get_category = g.get_category         
         self.g = g
@@ -66,22 +64,22 @@ class FourPart:
         
     def run(self):
         g = InfoCluster(gamma = self._gamma)
-        g.fit(self.pos_list, use_pdt = USE_PDT, use_psp_i=USE_PSP_I)
-        self.partition_num_list = g.partition_num_list
+        g.fit(self.pos_list)
+        self.partition_list = g.partition_list
         self.critical_values = g.critical_values
         self.get_category = g.get_category        
         self.g = g
         
-def check_cat(min_num, partition):
+def check_cat(min_num, partition_list):
     '''
     return the index of partition whose first element is no smaller than min_num,
     '''
-    for i in range(len(partition)):
-        if(partition[i]>=min_num):
+    for i in range(len(partition_list)):
+        if len(partition_list[i]) >= min_num:
             break
-    if(i>=len(partition)-2):
+    if i >= len(partition_list)-2:
         return -1
-    elif(partition[i+2] > MAX_CAT):
+    elif len(partition_list[i+2]) > MAX_CAT:
         return -2
     else:    
         return i
@@ -106,15 +104,15 @@ def plot_inner(index, grach_cluster_object, fileName):
     grach_cluster_object: instance of GraphCluster
     fileName: graph output file name
     '''
-    p = grach_cluster_object.partition_num_list
+    p = grach_cluster_object.partition_list
     cv = grach_cluster_object.critical_values
     i = index
     plt.figure(figsize=(9.2, 3))
     plt.subplots_adjust(wspace=.05)    
     lambda_list = [cv[i-1],cv[i],cv[i+1]]
-    cat_num_list = [p[i], p[i+1], p[i+2]]    
+    cat_num_list = [len(p[i]), len(p[i+1]), len(p[i+2])]    
     for index, cat_num in enumerate(cat_num_list):
-        ax = plt.subplot(1,3,index+1)          
+        ax = plt.subplot(1, 3, index+1)          
         cat = grach_cluster_object.get_category(cat_num)
         print('num of cat:', cat_num)
         plot_cluster(grach_cluster_object.pos_list, cat, cat_num, ax)
@@ -148,7 +146,7 @@ def plot_FourPart():
         print('run four part...')
         g.run()    
         # divide into >=4 parts        
-        i = check_cat(4, g.partition_num_list)
+        i = check_cat(4, g.partition_list)
     plot_inner(i, g, '4part.eps')
     
 @cal_time    
@@ -164,28 +162,19 @@ def plot_ThreeCircle():
         print('run three circle...')
         g.run()    
         # divide into >=2 parts        
-        i = check_cat(2, g.partition_num_list)
+        i = check_cat(2, g.partition_list)
         rerun = True
     plot_inner(i, g, '3circle.eps')
 
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()      
-    parser.add_argument('--use_pdt', type=bool, help='use parameteric Dilworth Truncation implementation of info-cluster to draw',
-        default=True)
-    parser.add_argument('--use_psp_i', type=bool, help='use improved principal sequence of partition',
-        default=False)        
     parser.add_argument('--show_pic', type=bool, help='whether to show the picture while program is running',
         default=False, nargs='?', const=True)
     parser.add_argument('--ignore_four_part', type=bool, help='ignore plotting four part case', default=False, nargs='?', const=True)
     parser.add_argument('--debug', type=bool, help='enter debug mode', default=False, nargs='?', const=True)
     parser.add_argument('--report_time', type=bool, help='report the time used to plot the graph', default=False, nargs='?', const=True)
     args = parser.parse_args()
-    if(args.use_psp_i):
-        USE_PDT = False
-        USE_PSP_I = True
-    else:
-        USE_PDT = args.use_pdt
     SHOW_PIC = args.show_pic
     CAL_TIME = args.report_time
     if(args.debug):
