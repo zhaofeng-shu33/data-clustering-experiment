@@ -8,7 +8,7 @@ python schema.py
 to generate tuning configure files.
 
 * Use `python fine_tuning.py` to generate or update `parameter.json`.
-* Use `python empirical_compare.py` which loads `parameter.json` to generate the LaTeX table files
+* Use `python empirical_compare.py` which loads `parameter.json` to generate the LaTeX table files.
 
 ## Choices
 you can filter out which datasets and methods to use when generating LaTeX table. For example,
@@ -26,5 +26,5 @@ If you are impatient, after downloading `parameter.json` and put it in `build/` 
 
 ## Basic Plotting
 Plotting routines are provided to visualize the clustering result in `plot_art` directory.
-You need to install matplotlib package before using it. (`requirement.txt` is not required)
+You need to install matplotlib package before using it. (`requirements.txt` is not required)
 Usage: `python plot_art/plot_art.py --show_pic`. 

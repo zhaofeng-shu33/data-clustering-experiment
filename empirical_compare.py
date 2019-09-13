@@ -108,7 +108,12 @@ def Circle(parameter_dic):
         pos_list = data[:,:2]
         ground_truth = data[:,-1]  
     return compute_adjusted_rand_score(pos_list, ground_truth, parameter_dic)
-        
+
+def Libras(parameter_dic):
+    feature, ground_truth = fetch_uci_libras()
+    feature = scale(feature)
+    return compute_adjusted_rand_score(feature, ground_truth, parameter_dic)
+    
 def Iris(parameter_dic):
     feature, ground_truth = datasets.load_iris(return_X_y = True)
     return compute_adjusted_rand_score(feature, ground_truth, parameter_dic)    
