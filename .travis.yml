@@ -1,0 +1,11 @@
+os: linux
+dist: xenial
+language: python
+python: 3.6
+install:
+  - pip install -r requirements.txt
+script:
+  - mkdir build
+  - python empirical_compare.py
+  - python plot_art.py
+

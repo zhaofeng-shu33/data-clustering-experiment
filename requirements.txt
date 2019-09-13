@@ -3,4 +3,5 @@ oss2
 tabulate
 easydict
 pyyaml
+six
 info_cluster
