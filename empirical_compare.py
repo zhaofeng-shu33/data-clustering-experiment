@@ -80,7 +80,7 @@ def compute_adjusted_rand_score(feature, ground_truth, parameter_dic):
         exec('ari = _{0}(feature, ground_truth, parameter)'.format(_method))
         _ari = locals()['ari']
         dic[method] = _ari
-        if not(parameter.get('ari') and parameter['ari'] > _ari):
+        if not(parameter.get('ari') and abs(parameter['ari'] - _ari) < 0.01 ):
             parameter['ari'] = _ari
         logging.info('%s ari is %.3f' % (method, _ari))    
     return dic
@@ -157,7 +157,7 @@ if __name__ == '__main__':
     parser.add_argument('--ignore_computing', help='whether to ignore computing and use ari field in parameter file directly', default=False, type=bool, nargs='?', const=True)    
     parser.add_argument('--debug', help='whether to enter debug mode', default=False, type=bool, nargs='?', const=True)    
     parser.add_argument('--dataset', help='name of the dataset to fine tuning', default='all', choices=dataset_choices, nargs='+')
-    parser.add_argument('--method', help='clustering method to fine tuning', default='all', choices=method_chocies, nargs='+')    
+    parser.add_argument('--method', help='clustering method to output results', default='all', choices=method_chocies, nargs='+')    
     args = parser.parse_args()
 
     dataset_choices.pop()
