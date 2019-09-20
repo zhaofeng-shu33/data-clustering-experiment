@@ -40,11 +40,14 @@
             "n_neighbors": 16
         },
         "info-clustering": {
-            "nc": 3,
-            "affinity": "nearest_neighbors",
+            "nc": 3.0,
+            "affinity": [
+                "nearest_neighbors",
+                "rbf"
+            ],
             "n_neighbors": 8,
-            "gamma": 0.3,
-            "ari": 0.7976448294531673
+            "gamma": 0.01,
+            "ari": 1.0
         },
         "k-means": {
             "nc": 3,
@@ -107,7 +110,7 @@
         },
         "k-means": {
             "nc": 6,
-            "ari": 0.16420176720843732
+            "ari": 0.16453572661373836
         },
         "spectral_clustering": {
             "nc": 6,
@@ -126,15 +129,18 @@
             "ari": 0.23017822457665632
         },
         "info-clustering": {
-            "nc": 76,
-            "affinity": "rbf",
-            "n_neighbors": 0,
-            "gamma": 0.6,
-            "ari": 0.12990154808080598
+            "nc": 38.0,
+            "affinity": [
+                "nearest_neighbors",
+                "rbf"
+            ],
+            "n_neighbors": 4,
+            "gamma": 0.2,
+            "ari": 0.25453807813680274
         },
         "k-means": {
             "nc": 15,
-            "ari": 0.33832295864681644
+            "ari": 0.29260784628785513
         },
         "spectral_clustering": {
             "nc": 15,
