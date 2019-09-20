@@ -129,7 +129,7 @@ def _info_clustering(feature, ground_truth, config):
                     ref_sc = sc
                 logging.info('nc = %d, ari = %.3f, gamma = %f, n_neighbors = %d, affinity = [\'nearest_neighbors\', \'rbf\']'% (optimal_parameter['nc'], sc, _gamma, _n_neighbors))
 
-    optimal_parameter['ari'] = ref_sc        
+    optimal_parameter['ari'] = ref_sc
     return optimal_parameter
     
 def _affinity_propagation(feature, ground_truth, config):
