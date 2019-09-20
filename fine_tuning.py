@@ -86,11 +86,11 @@ def _info_clustering(feature, ground_truth, config):
     for kernel in config_kernel:
         for _gamma in config['gamma']:
             g = info_cluster.InfoCluster(gamma = _gamma, affinity = kernel)
+            g.fit(feature)
             for n_c in config['nc']:
-                g.fit(feature)
                 y_pred_ic = g.get_category(n_c)
                 sc = metrics.adjusted_rand_score(ground_truth, y_pred_ic)
-                if(sc>ref_sc):
+                if sc > ref_sc:
                     optimal_parameter['affinity'] = kernel
                     optimal_parameter['gamma'] = _gamma
                     optimal_parameter['nc'] = max(y_pred_ic) + 1
@@ -98,9 +98,9 @@ def _info_clustering(feature, ground_truth, config):
             logging.info('nc = %d, ari = %.3f, gamma = %f, affinity = %s'% (optimal_parameter['nc'], sc, _gamma, kernel))            
     if(config['affinity'].count('nearest_neighbors')>0):
         for _n_neighbors in config['n_neighbors']:
-            g = info_cluster.InfoCluster(affinity = 'nearest_neighbors', n_neighbors=_n_neighbors)
+            g = info_cluster.InfoCluster(affinity='nearest_neighbors', n_neighbors=_n_neighbors)
+            g.fit(feature)
             for n_c in config['nc']:
-                g.fit(feature)
                 y_pred_ic = g.get_category(n_c)
                 sc = metrics.adjusted_rand_score(ground_truth, y_pred_ic)
                 if(sc>ref_sc):
@@ -109,6 +109,26 @@ def _info_clustering(feature, ground_truth, config):
                     optimal_parameter['nc'] = max(y_pred_ic) + 1
                     ref_sc = sc
             logging.info('nc = %d, ari = %.3f, n_neighbors = %d, affinity = nearest_neighbors'% (optimal_parameter['nc'], sc, _n_neighbors))            
+    has_list = False
+    for i in config['affinity']:
+        if isinstance(i, list):
+            has_list = i
+    if has_list and has_list.count('nearest_neighbors') >=0 and has_list.count('rbf') >=0:
+        for _n_neighbors in config['n_neighbors']:
+            for _gamma in config['gamma']:
+                g = info_cluster.InfoCluster(affinity=['nearest_neighbors', 'rbf'], gamma = _gamma, n_neighbors=_n_neighbors)
+                g.fit(feature)
+                for n_c in config['nc']:
+                    y_pred_ic = g.get_category(n_c)
+                    sc = metrics.adjusted_rand_score(ground_truth, y_pred_ic)
+                    if sc > ref_sc:
+                        optimal_parameter['affinity'] = ['nearest_neighbors', 'rbf']
+                        optimal_parameter['n_neighbors'] = _n_neighbors
+                        optimal_parameter['gamma'] = _gamma
+                        optimal_parameter['nc'] = max(y_pred_ic) + 1
+                    ref_sc = sc
+                logging.info('nc = %d, ari = %.3f, gamma = %f, n_neighbors = %d, affinity = [\'nearest_neighbors\', \'rbf\']'% (optimal_parameter['nc'], sc, _gamma, _n_neighbors))
+
     optimal_parameter['ari'] = ref_sc        
     return optimal_parameter
     

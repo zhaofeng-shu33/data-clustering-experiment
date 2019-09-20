@@ -30,6 +30,7 @@ METHOD_SCHEMA:
         affinity:
         - nearest_neighbors
         - rbf
+        - ['nearest_neighbors', 'rbf']
         gamma:
         - 0.6
         n_neighbors:
