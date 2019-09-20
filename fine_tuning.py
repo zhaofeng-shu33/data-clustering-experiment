@@ -87,7 +87,8 @@ def _info_clustering(feature, ground_truth, config):
         for _gamma in config['gamma']:
             g = info_cluster.InfoCluster(gamma = _gamma, affinity = kernel)
             for n_c in config['nc']:
-                y_pred_ic = g.get_category(n_c, feature)
+                g.fit(feature)
+                y_pred_ic = g.get_category(n_c)
                 sc = metrics.adjusted_rand_score(ground_truth, y_pred_ic)
                 if(sc>ref_sc):
                     optimal_parameter['affinity'] = kernel
@@ -99,7 +100,8 @@ def _info_clustering(feature, ground_truth, config):
         for _n_neighbors in config['n_neighbors']:
             g = info_cluster.InfoCluster(affinity = 'nearest_neighbors', n_neighbors=_n_neighbors)
             for n_c in config['nc']:
-                y_pred_ic = g.get_category(n_c, feature)
+                g.fit(feature)
+                y_pred_ic = g.get_category(n_c)
                 sc = metrics.adjusted_rand_score(ground_truth, y_pred_ic)
                 if(sc>ref_sc):
                     optimal_parameter['affinity'] = 'nearest_neighbors'
