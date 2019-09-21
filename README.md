@@ -1,16 +1,24 @@
 [![Build Status](https://travis-ci.com/zhaofeng-shu33/data-clustering-experiment.svg?branch=master)](https://travis-ci.com/zhaofeng-shu33/data-clustering-experiment)
 
 # Prerequisite
-To run the Python code in the directory, you need to install packages listed in `requirements.txt`, the package `oss2` is optional but currently the package control is under progress, so you need to install optional package as well.
+To run the Python code in the directory, you need to install packages listed in `requirements.txt`. You need also to create a directory `build` in the current directory and copy `parameter.json` to the build directory.
 
-To start freshly, you need run
+Then you can run `python empirical_compare.py`  which loads `parameter.json` to generate the LaTeX table files. After the program finishes, check your result in `compare.tex` in the build directory.
+
+## Parameter tuning
+
+Generally, you do not need to tune the parameters since it is a tedious task and you should try a lot of combinations of different hyper parameters. But sometimes you need to do so. To start tuning your parameter in this experiment, first make sure you finish the steps in prerequisite. Then you need run once
+
 ```
 python schema.py 
 ```
-to generate tuning configure files.
+This step generates tuning configure file `tuning.json`, then you should modify the parameter combination in this file. The program `fine_tuning.py` just combines them using nested for loop.
 
-* Use `python fine_tuning.py` to generate or update `parameter.json`.
-* Use `python empirical_compare.py` which loads `parameter.json` to generate the LaTeX table files.
+By running `python fine_tuning.py` .  Check how to use this problem by providing `--help` switch.
+
+If a better parameter combination is found, The `parameter.json` will be updated automatically.
+
+
 
 ## Choices
 you can filter out which datasets and methods to use when generating LaTeX table. For example,
