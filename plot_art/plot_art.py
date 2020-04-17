@@ -32,8 +32,8 @@ class ThreeCircle:
         num_list = [60,100,140]
         for i in range(1,4): # radius: 0.1*i
             for j in range(num_list[i-1]):
-                r = 0.1*i + 0.01 * (2*random.random()-1)
-                angle = 2*np.pi * random.random()
+                r = 0.1 * i + 0.01 * (2*random.random()-1)
+                angle = 2 * np.pi * random.random()
                 pos_list.append([r * np.cos(angle), r * np.sin(angle)])
         self.pos_list = np.asarray(pos_list)
         
@@ -137,7 +137,7 @@ def cal_time(func):
     return func_wrapper
         
 @cal_time    
-def plot_FourPart():
+def plot_FourPart(pic_extension):
     print('plot_FourPart')
     global color_list, marker_list, MAX_CAT
     i = -1
@@ -147,10 +147,10 @@ def plot_FourPart():
         g.run()    
         # divide into >=4 parts        
         i = check_cat(4, g.partition_list)
-    plot_inner(i, g, '4part.eps')
+    plot_inner(i, g, '4part' + pic_extension)
     
 @cal_time    
-def plot_ThreeCircle():
+def plot_ThreeCircle(pic_extension):
     print('plot_ThreeCircle')
     global color_list, marker_list, MAX_CAT
     i = -1
@@ -164,7 +164,7 @@ def plot_ThreeCircle():
         # divide into >=2 parts        
         i = check_cat(2, g.partition_list)
         rerun = True
-    plot_inner(i, g, '3circle.eps')
+    plot_inner(i, g, '3circle' + pic_extension)
 
 
 if __name__ == '__main__':
@@ -172,13 +172,13 @@ if __name__ == '__main__':
     parser.add_argument('--show_pic', type=bool, help='whether to show the picture while program is running',
         default=False, nargs='?', const=True)
     parser.add_argument('--ignore_four_part', type=bool, help='ignore plotting four part case', default=False, nargs='?', const=True)
-    parser.add_argument('--debug', type=bool, help='enter debug mode', default=False, nargs='?', const=True)
     parser.add_argument('--report_time', type=bool, help='report the time used to plot the graph', default=False, nargs='?', const=True)
+    parser.add_argument('--format', default='eps', choices=['eps', 'png'])
     args = parser.parse_args()
     SHOW_PIC = args.show_pic
     CAL_TIME = args.report_time
-    if(args.debug):
-        pdb.set_trace()
+    if not os.path.exists('build'):
+        os.mkdir('build')
     if not(args.ignore_four_part):
-        plot_FourPart()
-    plot_ThreeCircle()
+        plot_FourPart(args.format)
+    plot_ThreeCircle(args.format)
