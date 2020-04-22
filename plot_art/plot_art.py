@@ -121,15 +121,19 @@ def plot_inner(index, grach_cluster_object, fileName):
         ax.set_title('$\lambda = %.2f$' % lambda_list[index])
     if(SHOW_PIC):
         plt.show()
-    plt.savefig(os.path.join('build', fileName))
+    saved_file = os.path.join('build', fileName)
+    if fileName.find('png') > 0:
+        plt.savefig(saved_file, transparent=True)
+    else:
+        plt.savefig(saved_file)
     
 def cal_time(func):
     '''
     print the time used to execute the func
     '''    
-    def func_wrapper():
+    def func_wrapper(args):
         start_time = time.time()
-        func()
+        func(args)
         end_time = time.time()
         if(CAL_TIME):
             print('time used to execute %s is %.2f'%(func.__name__, end_time - start_time))
