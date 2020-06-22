@@ -15,6 +15,8 @@ from sklearn import preprocessing
 from sklearn.neighbors import kneighbors_graph
 from sklearn.model_selection import cross_validate
 from sklearn.preprocessing import scale
+from sklearn.datasets import load_digits
+from sklearn.decomposition import PCA
 import numpy as np
 from tabulate import tabulate
 import argparse
@@ -122,7 +124,13 @@ def Glass(parameter_dic):
     feature, ground_truth = fetch_uci_glass()
     feature = scale(feature)
     return compute_adjusted_rand_score(feature, ground_truth, parameter_dic)
-    
+
+def Digit(parameter_dic):
+    feature, ground_truth = load_digits(return_X_y=True)
+    feature = scale(feature)
+    feature = PCA(n_components=2).fit_transform(feature)
+    return compute_adjusted_rand_score(feature, ground_truth, parameter_dic)
+
 def compute(use_cloud, dataset_list):
     json_str = schema.get_file(schema.PARAMETER_FILE, use_cloud)
     p_dic = json.loads(json_str)
@@ -154,7 +162,7 @@ if __name__ == '__main__':
     method_chocies = [i for i in schema.METHOD_SCHEMA]
     dataset_choices.append('all')
     method_chocies.append('all')
-    parser = argparse.ArgumentParser()    
+    parser = argparse.ArgumentParser()
     parser.add_argument('--use_cloud', help='whether to use cloud parameter.json', default=False, type=bool, nargs='?', const=True)
     parser.add_argument('--custom_table_name', help='user provided latex table name instead of schema.LATEX_TABLE_NAME', default=schema.LATEX_TABLE_NAME)
     parser.add_argument('--ignore_computing', help='whether to ignore computing and use ari field in parameter file directly', default=False, type=bool, nargs='?', const=True)    

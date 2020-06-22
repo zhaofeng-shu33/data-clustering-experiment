@@ -10,6 +10,7 @@ DATASET_SCHEMA:
     Iris: 3
     Glass: 6
     Libras: 15
+    Digit: 10
 METHOD_SCHEMA:    
     agglomerative:
         linkage:
