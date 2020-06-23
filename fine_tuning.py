@@ -88,7 +88,7 @@ def _info_clustering(feature, ground_truth, config):
     for kernel in config_kernel:
         for _gamma in config['gamma']:
             g = info_cluster.InfoCluster(gamma = _gamma, affinity = kernel)
-            g.fit(feature)
+            g.fit(feature, initialize_tree=False,  second_clustering=True)
             for n_c in config['nc']:
                 y_pred_ic = g.get_category(n_c)
                 sc = metrics.adjusted_rand_score(ground_truth, y_pred_ic)
@@ -101,7 +101,7 @@ def _info_clustering(feature, ground_truth, config):
     if(config['affinity'].count('nearest_neighbors')>0):
         for _n_neighbors in config['n_neighbors']:
             g = info_cluster.InfoCluster(affinity='nearest_neighbors', n_neighbors=_n_neighbors)
-            g.fit(feature, False)
+            g.fit(feature, initialize_tree=False, second_clustering=True)
             for n_c in config['nc']:
                 y_pred_ic = g.get_category(n_c)
                 sc = metrics.adjusted_rand_score(ground_truth, y_pred_ic)
@@ -119,7 +119,7 @@ def _info_clustering(feature, ground_truth, config):
         for _n_neighbors in config['n_neighbors']:
             for _gamma in config['gamma']:
                 g = info_cluster.InfoCluster(affinity=['nearest_neighbors', 'rbf'], gamma = _gamma, n_neighbors=_n_neighbors)
-                g.fit(feature)
+                g.fit(feature, initialize_tree=False, second_clustering=True)
                 for n_c in config['nc']:
                     y_pred_ic = g.get_category(n_c)
                     sc = metrics.adjusted_rand_score(ground_truth, y_pred_ic)
