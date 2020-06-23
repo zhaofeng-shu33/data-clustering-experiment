@@ -15,8 +15,6 @@ from sklearn import metrics
 from sklearn import cluster
 from sklearn.neighbors import kneighbors_graph
 from sklearn.model_selection import cross_validate
-from sklearn.datasets import load_digits
-from sklearn.decomposition import PCA
 from sklearn import datasets
 from sklearn.preprocessing import scale
 import numpy as np
@@ -233,13 +231,7 @@ def Libras(method, config):
     feature, ground_truth = fetch_uci_libras()
     feature = scale(feature)
     return fine_tuning(feature, ground_truth, method, config)    
-
-def Digit(method, config):
-    feature, ground_truth = load_digits(return_X_y=True)
-    feature = scale(feature)
-    feature = PCA(n_components=2).fit_transform(feature)
-    return fine_tuning(feature, ground_truth, method, config)
-          
+            
 def compute(dataset, method, use_cloud):
     global logging
     parameter_json_str = schema.get_file(schema.PARAMETER_FILE, use_cloud)
