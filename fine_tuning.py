@@ -101,7 +101,7 @@ def _info_clustering(feature, ground_truth, config):
     if(config['affinity'].count('nearest_neighbors')>0):
         for _n_neighbors in config['n_neighbors']:
             g = info_cluster.InfoCluster(affinity='nearest_neighbors', n_neighbors=_n_neighbors)
-            g.fit(feature)
+            g.fit(feature, False)
             for n_c in config['nc']:
                 y_pred_ic = g.get_category(n_c)
                 sc = metrics.adjusted_rand_score(ground_truth, y_pred_ic)
@@ -237,8 +237,8 @@ def Libras(method, config):
 def Digit(method, config):
     feature, ground_truth = load_digits(return_X_y=True)
     feature = scale(feature)
-    feature = PCA(n_components=2).fit_transform(feature)
-    return fine_tuning(feature, ground_truth, method, config)
+    feature = PCA(n_components=10).fit_transform(feature)
+    return fine_tuning(feature[:1000], ground_truth[:1000], method, config)
           
 def compute(dataset, method, use_cloud):
     global logging

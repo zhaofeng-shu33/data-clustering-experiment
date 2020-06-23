@@ -128,8 +128,8 @@ def Glass(parameter_dic):
 def Digit(parameter_dic):
     feature, ground_truth = load_digits(return_X_y=True)
     feature = scale(feature)
-    feature = PCA(n_components=2).fit_transform(feature)
-    return compute_adjusted_rand_score(feature, ground_truth, parameter_dic)
+    feature = PCA(n_components=10).fit_transform(feature)
+    return compute_adjusted_rand_score(feature[:200], ground_truth[:200], parameter_dic)
 
 def compute(use_cloud, dataset_list):
     json_str = schema.get_file(schema.PARAMETER_FILE, use_cloud)
