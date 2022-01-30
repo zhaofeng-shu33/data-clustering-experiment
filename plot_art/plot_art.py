@@ -153,7 +153,7 @@ def plot_FourPart(pic_extension):
         i = check_cat(4, g.partition_list)
     plot_inner(i, g, '4part' + pic_extension)
     
-@cal_time    
+@cal_time
 def plot_ThreeCircle(pic_extension):
     print('plot_ThreeCircle')
     global color_list, marker_list, MAX_CAT
@@ -164,7 +164,7 @@ def plot_ThreeCircle(pic_extension):
             print('rerun the clustering routine...')
         g = ThreeCircle()
         print('run three circle...')
-        g.run()    
+        g.run()
         # divide into >=2 parts        
         i = check_cat(2, g.partition_list)
         rerun = True
