@@ -177,12 +177,12 @@ if __name__ == '__main__':
         default=False, nargs='?', const=True)
     parser.add_argument('--ignore_four_part', type=bool, help='ignore plotting four part case', default=False, nargs='?', const=True)
     parser.add_argument('--report_time', type=bool, help='report the time used to plot the graph', default=False, nargs='?', const=True)
-    parser.add_argument('--format', default='eps', choices=['eps', 'png'])
+    parser.add_argument('--format', default='eps', choices=['eps', 'pdf', 'png'])
     args = parser.parse_args()
     SHOW_PIC = args.show_pic
     CAL_TIME = args.report_time
     if not os.path.exists('build'):
         os.mkdir('build')
     if not(args.ignore_four_part):
-        plot_FourPart(args.format)
-    plot_ThreeCircle(args.format)
+        plot_FourPart('.' + args.format)
+    plot_ThreeCircle('.' + args.format)
