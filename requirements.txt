@@ -1,3 +1,4 @@
+scikit-learn==0.20.3
 matplotlib
 oss2
 tabulate
